@@ -1,40 +1,63 @@
-import svgwrite
-from datetime import datetime
+from matplotlib import pyplot as plt
 
 
-def generate_svg_chart(data, width, height):
-    # Преобразуем даты в метки времени
-    data = [(datetime.strptime(date, "%Y-%m-%d"), rate) for date, rate in data]
+def generate_svg_chart(data: dict, output_filename: str = 'graph.svg', width=40, height=10):
+    # Separate the data into individual X and Y lists
+    x = [item[0] for item in data]
+    y = [item[1] for item in data]
 
-    # Вычисляем минимальное и максимальное значение engagement_rate
-    min_rate = min(data, key=lambda x: x[1])[1]
-    max_rate = max(data, key=lambda x: x[1])[1]
+    # Create a new figure with customizable dimensions
+    fig, ax = plt.subplots(figsize=(width, height))
 
-    # Создаем объект SVG-файла
-    dwg = svgwrite.Drawing('graph.svg', profile='tiny')
+    # Draw the chart line
+    ax.plot(x, y, color='black')
 
-    # Рисуем полоску графика
-    for i in range(len(data) - 1):
-        x1 = (data[i][0] - data[0][0]).days / (data[-1][0] - data[0][0]).days * width
-        x2 = (data[i+1][0] - data[0][0]).days / (data[-1][0] - data[0][0]).days * width
-        y1 = height - ((data[i][1] - min_rate) / (max_rate - min_rate) * height)
-        y2 = height - ((data[i+1][1] - min_rate) / (max_rate - min_rate) * height)
+    # Customize the axes and chart title
+    ax.set_xlabel('Timestamp')
+    ax.set_ylabel('Engagement Rate')
+    ax.set_title('Engagement Rate Chart')
 
-        dwg.add(dwg.line(start=(x1, y1), end=(x2, y2), stroke='black'))
+    # Remove the chart frame
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
 
-    # Сохраняем SVG-файл
-    dwg.save()
+    # Save the chart to SVG
+    plt.savefig(output_filename, format='svg', bbox_inches='tight')
+    plt.close()
 
 
-data = [
-    ("2023-05-28", 0.5),
-    ("2023-05-29", 0.3),
-    ("2023-05-30", 0.8),
-    ("2023-05-31", 0.6),
-    ("2023-06-01", 0.9),
-]
+if __name__ == "__main__":
+    # Example usage
+    data = [
+        ("2023-05-28", 0.5),
+        ("2023-05-29", 0.3),
+        ("2023-05-30", 0.8),
+        ("2023-05-31", 0.6),
+        ("2023-06-01", 0.9),
+        ("2023-06-28", 0.5),
+        ("2023-06-29", 0.3),
+        ("2023-06-30", 0.8),
+        ("2023-06-31", 0.6),
+        ("2023-07-01", 0.9),
+        ("2023-07-28", 0.5),
+        ("2023-07-29", 0.3),
+        ("2023-07-30", 0.8),
+        ("2023-07-31", 0.6),
+        ("2023-08-01", 0.9),
+        ("2023-08-28", 0.5),
+        ("2023-08-29", 0.3),
+        ("2023-08-30", 0.8),
+        ("2023-08-31", 0.6),
+        ("2023-09-01", 0.9),
+        ("2023-09-28", 0.5),
+        ("2023-09-29", 0.3),
+        ("2023-09-30", 0.8),
+        ("2023-09-31", 0.6),
+        ("2023-10-01", 0.9),
+        ("2023-10-28", 0.5),
+        ("2023-10-29", 0.3),
+        ("2023-10-30", 0.8),
+        ("2023-10-31", 0.6),
+    ]
 
-width = 100
-height = 100
-
-generate_svg_chart(data, width, height)
+    generate_svg_chart(data)
