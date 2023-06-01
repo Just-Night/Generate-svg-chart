@@ -12,7 +12,7 @@ class ChartGenerator:
         self.width = width
         self.height = height
 
-    def run(self, data: dict):
+    def run(self, data: list):
         # Separate the data into individual X and Y lists
         x = [item[0] for item in data]
         y = [item[1] for item in data]
